@@ -52,47 +52,75 @@ public class Controller {
     private void switchCommand(Command command) throws IOException {
         switch (command) {
             case OPEN:
-                System.out.print("Enter filename: ");
-                this.editor.open(this.scanner.next());
+                open();
                 break;
             case CREATE:
-                System.out.print("Enter filename: ");
-                this.editor.create(this.scanner.next());
+                create();
                 break;
             case READ:
-                System.out.println("File content starts here");
-                System.out.println(this.editor.read());
-                System.out.println("File content ends here");
+                read();
                 break;
             case WRITE:
-                System.out.println("Enter your text");
-                System.out.printf("For saving write %s\n", SAVE_TEXT);
-                System.out.printf("For closing without saving write %s\n", CLOSE_TEXT);
-                StringBuilder builder = new StringBuilder();
-                while (this.scanner.hasNextLine()) {
-                    String text = this.scanner.nextLine();
-                    if (SAVE_TEXT.equals(text)) {
-                        builder.delete(builder.lastIndexOf("\n"), builder.length());
-                        this.editor.write(builder.toString());
-                        System.out.println("Changes are saved.");
-                        break;
-                    } else if (CLOSE_TEXT.equals(text)) {
-                        System.out.println("Closing without saving.");
-                        break;
-                    }
-                    builder.append(text)
-                        .append("\n");
-                }
+                write();
                 break;
             case CLOSE:
-                this.editor.close();
+                close();
                 break;
             case DELETE:
-                this.editor.delete();
+                delete();
                 break;
             case EXIT:
-                this.isExitCommand = true;
+                exit();
                 break;
         }
+    }
+
+    private void open() throws IOException {
+        System.out.print("Enter filename: ");
+        this.editor.open(this.scanner.next());
+    }
+
+    private void create() throws IOException {
+        System.out.print("Enter filename: ");
+        this.editor.create(this.scanner.next());
+    }
+
+    private void read() throws IOException {
+        System.out.println("File content starts here");
+        System.out.println(this.editor.read());
+        System.out.println("File content ends here");
+    }
+
+    private void write() throws IOException {
+        System.out.println("Enter your text");
+        System.out.printf("For saving write %s\n", SAVE_TEXT);
+        System.out.printf("For closing without saving write %s\n", CLOSE_TEXT);
+        StringBuilder builder = new StringBuilder();
+        while (this.scanner.hasNextLine()) {
+            String text = this.scanner.nextLine();
+            if (SAVE_TEXT.equals(text)) {
+                builder.delete(builder.lastIndexOf("\n"), builder.length());
+                this.editor.write(builder.toString());
+                System.out.println("Changes are saved.");
+                break;
+            } else if (CLOSE_TEXT.equals(text)) {
+                System.out.println("Closing without saving.");
+                break;
+            }
+            builder.append(text)
+                .append("\n");
+        }
+    }
+
+    private void close() {
+        this.editor.close();
+    }
+
+    private void delete() {
+        this.editor.delete();
+    }
+
+    private void exit() {
+        this.isExitCommand = true;
     }
 }

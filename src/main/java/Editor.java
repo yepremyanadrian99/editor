@@ -39,6 +39,7 @@ public enum Editor {
     }
 
     public void close() {
+        this.state.close();
         this.file = null;
         this.state = new NullEditorState();
     }

@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import main.java.enums.Command;
+import main.java.enums.Constants;
 
 public class FileOpenedEditorState extends EditorState {
 
@@ -38,7 +39,7 @@ public class FileOpenedEditorState extends EditorState {
         try (FileInputStream input = new FileInputStream(file)) {
             int length = (int) file.length();
             if (length <= 0) {
-                return "";
+                return Constants.EMPTY_STRING;
             }
             byte[] bytes = new byte[length];
             input.read(bytes);

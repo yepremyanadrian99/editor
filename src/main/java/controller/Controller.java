@@ -1,4 +1,4 @@
-package main.java;
+package main.java.controller;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -6,6 +6,7 @@ import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
 import java.util.Scanner;
 
+import main.java.editor.Editor;
 import main.java.enums.Command;
 
 public class Controller {
@@ -13,11 +14,10 @@ public class Controller {
     private static final String SAVE_TEXT = ":save";
     private static final String CLOSE_TEXT = ":close";
 
-    private boolean isExitCommand = false;
-
     private final Scanner scanner = new Scanner(System.in);
-
     private final Editor editor = Editor.INSTANCE;
+
+    private boolean isExitCommand = false;
 
     public void start() throws IOException {
         while (!this.isExitCommand) {
@@ -57,6 +57,12 @@ public class Controller {
             case CREATE:
                 create();
                 break;
+            case COPY:
+                copy();
+                break;
+            case RENAME:
+                rename();
+                break;
             case READ:
                 read();
                 break;
@@ -76,19 +82,39 @@ public class Controller {
     }
 
     private void open() throws IOException {
-        System.out.print("Enter filename: ");
-        this.editor.open(this.scanner.next());
+        System.out.print("Enter file name: ");
+        this.editor.open(this.scanner.nextLine());
+        System.out.println("Opening file.");
     }
 
     private void create() throws IOException {
-        System.out.print("Enter filename: ");
-        this.editor.create(this.scanner.next());
+        System.out.print("Enter file name: ");
+        this.editor.create(this.scanner.nextLine());
+        System.out.println("File created successfully.");
+    }
+
+    private void copy() throws IOException {
+        System.out.print("Enter src file name: ");
+        String srcFileName = this.scanner.nextLine();
+        System.out.print("Enter dest file name: ");
+        String destFileName = this.scanner.nextLine();
+        this.editor.copy(srcFileName, destFileName);
+        System.out.println("File copied successfully.");
+    }
+
+    private void rename() throws IOException {
+        System.out.print("Enter file name: ");
+        String fileName = this.scanner.nextLine();
+        System.out.printf("Rename existing file: %s to: ", fileName);
+        String newFileName = this.scanner.nextLine();
+        this.editor.rename(fileName, newFileName);
+        System.out.println("File renamed successfully.");
     }
 
     private void read() throws IOException {
-        System.out.println("File content starts here");
+        System.out.println("------- File content starts here ------- ");
         System.out.println(this.editor.read());
-        System.out.println("File content ends here");
+        System.out.println("-------  File content ends here  ------- ");
     }
 
     private void write() throws IOException {
@@ -96,7 +122,7 @@ public class Controller {
         System.out.printf("For saving write %s\n", SAVE_TEXT);
         System.out.printf("For closing without saving write %s\n", CLOSE_TEXT);
         StringBuilder builder = new StringBuilder();
-        while (this.scanner.hasNextLine()) {
+        while (true) {
             String text = this.scanner.nextLine();
             if (SAVE_TEXT.equals(text)) {
                 builder.delete(builder.lastIndexOf("\n"), builder.length());
@@ -114,10 +140,12 @@ public class Controller {
 
     private void close() {
         this.editor.close();
+        System.out.println("Closing file.");
     }
 
-    private void delete() {
+    private void delete() throws IOException {
         this.editor.delete();
+        System.out.println("File deleted successfully.");
     }
 
     private void exit() {

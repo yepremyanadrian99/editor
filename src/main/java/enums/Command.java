@@ -4,6 +4,8 @@ public enum Command {
 
     OPEN("open"),
     CREATE("create"),
+    COPY("copy"),
+    RENAME("rename"),
     READ("read"),
     WRITE("write"),
     CLOSE("close"),

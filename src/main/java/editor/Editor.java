@@ -1,13 +1,13 @@
-package main.java;
+package main.java.editor;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import main.java.editor.state.EditorState;
+import main.java.editor.state.FileOpenedEditorState;
+import main.java.editor.state.NullEditorState;
 import main.java.enums.Command;
-import main.java.state.EditorState;
-import main.java.state.FileOpenedEditorState;
-import main.java.state.NullEditorState;
 
 public enum Editor {
 
@@ -30,12 +30,20 @@ public enum Editor {
         this.state = new FileOpenedEditorState();
     }
 
+    public void copy(String srcFileName, String destFileName) throws IOException {
+        this.state.copy(srcFileName, destFileName);
+    }
+
+    public void rename(String fileName, String newFileName) throws IOException {
+        this.state.rename(fileName, newFileName);
+    }
+
     public void write(String text) throws IOException {
-        this.state.write(this.file, text);
+        this.state.write(this.file.getName(), text);
     }
 
     public String read() throws IOException {
-        return this.state.read(this.file);
+        return new String(this.state.read(this.file.getName()));
     }
 
     public void close() {
@@ -44,8 +52,8 @@ public enum Editor {
         this.state = new NullEditorState();
     }
 
-    public void delete() {
-        this.state.delete(this.file);
+    public void delete() throws IOException {
+        this.state.delete(this.file.getName());
         this.file = null;
         this.state = new NullEditorState();
     }

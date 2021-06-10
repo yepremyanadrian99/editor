@@ -1,9 +1,7 @@
-package main.java.state;
+package main.java.editor.state;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -18,29 +16,31 @@ public class NullEditorState extends EditorState {
         return Stream.concat(
             Stream.of(
                 Command.OPEN,
-                Command.CREATE
+                Command.CREATE,
+                Command.COPY,
+                Command.RENAME
             ),
             defaultCommands.stream()
         ).collect(Collectors.toList());
     }
 
     @Override
-    public File create(String fileName) throws IOException {
-        File file = new File(fileName);
-        boolean isCreated = file.createNewFile();
-        if (!isCreated) {
-            throw new FileAlreadyExistsException(fileName);
-        }
-        return file;
+    public File open(String fileName) throws IOException {
+        return getEditorInternal().openInternal(fileName);
     }
 
     @Override
-    public File open(String fileName) throws IOException {
-        File file = new File(fileName);
-        boolean exists = file.exists();
-        if (!exists) {
-            throw new FileNotFoundException(fileName);
-        }
-        return file;
+    public File create(String fileName) throws IOException {
+        return getEditorInternal().createInternal(fileName);
+    }
+
+    @Override
+    public void copy(String srcFileName, String destFileName) throws IOException {
+        getEditorInternal().copyInternal(srcFileName, destFileName);
+    }
+
+    @Override
+    public void rename(String fileName, String newFileName) throws IOException {
+        getEditorInternal().rename(fileName, newFileName);
     }
 }
